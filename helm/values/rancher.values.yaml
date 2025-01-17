@@ -1,0 +1,11 @@
+hostname: "rancher.io" # Replace with your domain
+bootstrapPassword: admin  # Change this
+ingress:
+  enabled: true
+  tls:
+    source: secret
+service:
+  type: LoadBalancer
+  externalIPs:
+    - 192.168.1.205 # Replace with an IP from the MetalLB range
+replicas: 1

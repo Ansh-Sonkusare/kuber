@@ -1,23 +1,36 @@
 {
-  inputs.nixpkgs.url = "github:NixOS/nixpkgs/ccde02e9ff2";
+  description = "Nix flake for Helm and Helmfile with plugins";
+  inputs.nixpkgs.url = "github:NixOS/nixpkgs/master";
+  inputs.flake-utils.url = "github:numtide/flake-utils";
 
-  outputs = { self, nixpkgs }:
-    let
-      pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-    in
-    {
-      devShells.aarch64-darwin.default = pkgs.mkShell {
-        buildInputs = with pkgs; [
-          helmfile
-          (
-            wrapHelm kubernetes-helm {
-              plugins = with kubernetes-helmPlugins; [
-                helm-diff
-                helm-secrets
-              ];
-            }
-          )
-        ];
-      };
-    };
+  outputs = { self, nixpkgs, flake-utils }:
+    flake-utils.lib.eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          system = "x86_64-linux";
+          overlays = [
+            (final: prev: rec {
+              kubernetes-helm-wrapped = prev.wrapHelm prev.kubernetes-helm {
+                plugins = with prev.kubernetes-helmPlugins; [
+                  helm-diff
+                  helm-secrets
+                  helm-s3
+                ];
+              };
+            })
+          ];
+        };
+      in
+      {
+        devShells.default = pkgs.mkShell {
+          name = "helmfile devShell";
+          nativeBuildInputs = with pkgs; [
+            bashInteractive
+          ];
+          buildInputs = with pkgs; [
+            kubernetes-helm-wrapped
+            helmfile-wrapped
+          ];
+        };
+      });
 }

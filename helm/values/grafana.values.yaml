@@ -1,0 +1,24 @@
+persistence:
+  enabled: true
+  size: 10Gi
+
+service:
+  type: LoadBalancer
+  loadBalancerIP: 192.168.1.252
+  annotations:
+    metallb.universe.tf/allow-shared-ip: grafana-svc
+
+admin:
+  existingSecret: grafana-admin-credentials
+  userKey: admin-user
+  passwordKey: admin-password
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: Prometheus
+        type: prometheus
+        url: http://192.168.1.251:9090
+        access: proxy
+        isDefault: true

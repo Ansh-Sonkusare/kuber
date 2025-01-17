@@ -5,6 +5,16 @@ repositories:
     url: https://metallb.github.io/metallb
   - name: mojo2600
     url: https://mojo2600.github.io/pihole-kubernetes/
+  # New repositories
+  - name: rancher-stable
+    url: https://releases.rancher.com/server-charts/stable
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+  - name: jetstack
+    url: https://charts.jetstack.io
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+
 ---
 releases:
   - name: longhorn
@@ -23,4 +33,38 @@ releases:
     version: 2.18.0
     values:
       - ./values/pihole.values.yaml
+
+  # Cert-manager (required for Rancher)
+  - name: cert-manager
+    namespace: cert-manager
+    chart: jetstack/cert-manager
+    version: v1.14.0
+    set:
+      - name: installCRDs
+        value: true
+
+  # Rancher
+  - name: rancher
+    namespace: cattle-system
+    chart: rancher-stable/rancher
+    version: 2.10.1
+    needs:
+      - cert-manager/cert-manager
+    values:
+      - ./values/rancher.values.yaml
+
+  # Grafana
+  - name: grafana
+    namespace: monitoring
+    chart: grafana/grafana
+    version: 7.3.0
+    values:
+      - ./values/grafana.values.yaml
+
+
+  - name: prometheus
+    namespace: prometheus
+    chart: prometheus-community/prometheus
+    values:
+      - ./values/prometheus.values.yaml
 
