@@ -7,7 +7,7 @@
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs {
-          system = "x86_64-linux";
+          system = system;
           overlays = [
             (final: prev: rec {
               kubernetes-helm-wrapped = prev.wrapHelm prev.kubernetes-helm {
