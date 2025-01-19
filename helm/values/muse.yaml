@@ -1,0 +1,10 @@
+replicaCount: 5
+
+image:
+  repository: ghcr.io/museofficial/muse
+  tag: latest
+  pullPolicy: Always
+
+persistence:
+  size: 1Gi
+

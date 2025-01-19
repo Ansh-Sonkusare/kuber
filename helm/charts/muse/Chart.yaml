@@ -1,0 +1,5 @@
+apiVersion: v2
+name: muse
+description: A Helm chart for Muse Discord Bot
+version: 0.1.0
+type: application

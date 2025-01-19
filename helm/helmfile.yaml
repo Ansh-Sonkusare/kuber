@@ -17,6 +17,12 @@ repositories:
 
 ---
 releases:
+  - name: muse
+    namespace: muse
+    chart: ./charts/muse
+    values:
+      - ./values/muse.yaml
+      - ./secrets/muse.yaml
   - name: longhorn
     namespace: longhorn-system
     chart: longhorn/longhorn
