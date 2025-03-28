@@ -4,10 +4,19 @@ DNS1:
 persistentVolumeClaim:
   enabled: true
 serviceWeb:
-  loadBalancerIP: 192.168.1.250
+  http:
+    enabled: true
+    port: 8084  # Change external port here
+    nodePort: ""
+   type: LoadBalancer  # Change from ClusterIP to LoadBalancer
+  externalTrafficPolicy: Local
+
+  loadBalancerIP: "192.168.1.250"  # Set static LoadBalancer IP
+  loadBalancerIPv6: ""
+
   annotations:
-    metallb.universe.tf/allow-shared-ip: pihole-svc
-  type: LoadBalancer
+    metallb.universe.tf/allow-shared-ip: pihole-svc  # Enable shared IP for MetalLB
+
 serviceDns:
   loadBalancerIP: 192.168.1.250
   annotations:
